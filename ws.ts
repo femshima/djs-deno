@@ -3,14 +3,15 @@ import { EventEmitter } from "https://deno.land/std@0.161.0/node/events.ts";
 type Listener<K extends keyof WebSocketEventMap> = (args: WebSocketEventMap[K]) => void | Promise<void>;
 
 class MyWebSocket extends EventEmitter {
-  #socket: WebSocket
   static CONNECTING = 0;
   static OPEN = 1;
   static CLOSING = 2;
   static CLOSED = 3;
+  static encoding = 'json';
   static create(url: string) {
     return new MyWebSocket(url);
   }
+  static pack = JSON.stringify
   static unpack(data: string | BufferSource) {
     const ab = new TextDecoder();
     if (typeof data !== 'string') {
@@ -47,6 +48,9 @@ class MyWebSocket extends EventEmitter {
   }
   close(code?: number, reason?: string) {
     return this.#socket.close(code, reason)
+  }
+  terminate() {
+    this.#socket.close()
   }
 
   set onopen(listener: Listener<'open'> | null) {
