@@ -18,11 +18,19 @@ class MyWebSocket extends EventEmitter {
     }
     return JSON.parse(data);
   }
-  static pack = JSON.stringify
 
+  #listeners: {
+    [K in keyof WebSocketEventMap]?: Listener<K>
+  } = {};
+  #socket: WebSocket
   constructor(url: string, protocols: string[] = []) {
     super()
     this.#socket = new WebSocket(url, protocols)
+
+    this.on('open', args => this.#listeners.open?.(args));
+    this.on('message', args => this.#listeners.message?.(args));
+    this.on('error', args => this.#listeners.error?.(args));
+    this.on('close', args => this.#listeners.close?.(args));
   }
   override on<K extends keyof WebSocketEventMap>(event: K, listener: Listener<K>): this {
     super.on(event, listener)
@@ -41,17 +49,17 @@ class MyWebSocket extends EventEmitter {
     return this.#socket.close(code, reason)
   }
 
-  set onopen(listener: Listener<'open'>) {
-    this.on("open",listener);
+  set onopen(listener: Listener<'open'> | null) {
+    this.#listeners.open = listener ?? undefined;
   }
-  set onmessage(listener: Listener<'message'>) {
-    this.on("message",listener);
+  set onmessage(listener: Listener<'message'> | null) {
+    this.#listeners.message = listener ?? undefined;
   }
-  set onerror(listener: Listener<'error'>) {
-    this.on("error",listener);
+  set onerror(listener: Listener<'error'> | null) {
+    this.#listeners.error = listener ?? undefined;
   }
-  set onclose(listener: Listener<'close'>) {
-    this.on("close", listener);
+  set onclose(listener: Listener<'close'> | null) {
+    this.#listeners.close = listener ?? undefined;
   }
 }
 
