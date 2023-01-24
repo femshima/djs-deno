@@ -42,16 +42,16 @@ class MyWebSocket extends EventEmitter {
   }
 
   set onopen(listener: Listener<'open'>) {
-    this.#socket.onopen = listener;
+    this.on("open",listener);
   }
   set onmessage(listener: Listener<'message'>) {
-    this.#socket.onmessage = listener;
+    this.on("message",listener);
   }
   set onerror(listener: Listener<'error'>) {
-    this.#socket.onerror = listener;
+    this.on("error",listener);
   }
   set onclose(listener: Listener<'close'>) {
-    this.#socket.onclose = listener;
+    this.on("close", listener);
   }
 }
 
