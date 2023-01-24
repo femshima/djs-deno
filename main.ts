@@ -1,11 +1,9 @@
-import * as Discord from "npm:discord.js";
+import { Client, WebSocketShard } from "npm:discord.js";
 import "https://deno.land/x/dotenv@v3.2.0/load.ts";
 
 import { MyWebSocket } from "./ws.ts";
 
-(Discord.WebSocketShard as any).setWS(MyWebSocket);
-
-const { Client } = Discord;
+(WebSocketShard as any).setWS(MyWebSocket);
 
 const client = new Client({
   intents: ["Guilds"],
