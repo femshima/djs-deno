@@ -8,8 +8,8 @@ const modified = orig
     "let WebSocket = require('../../WebSocket');",
   )
   .replace(
-    "class WebSocketShard extends EventEmitter {\n    ",
-    "class WebSocketShard extends EventEmitter {\nstatic setWS(ws){WebSocket=ws;}",
+    "class WebSocketShard extends EventEmitter {\n  constructor",
+    "class WebSocketShard extends EventEmitter {\n  static setWS(ws){WebSocket=ws;}\n  constructor",
   );
 
 await Deno.writeTextFile(path, modified);
